@@ -1193,13 +1193,15 @@ const store = Redux.createStore(immutableReducer);
 
 
 
+// Connect Redux to the Messages App
+
 // Redux:
 const ADD = 'ADD';
 
 const addMessage = (message) => {
   return {
     type: ADD,
-    message
+    message: message
   }
 };
 
@@ -1215,13 +1217,10 @@ const messageReducer = (state = [], action) => {
   }
 };
 
-
-
 const store = Redux.createStore(messageReducer);
 
 // React:
-
-class DisplayMessages extends React.Component {
+class Presentational extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -1236,7 +1235,7 @@ class DisplayMessages extends React.Component {
       input: event.target.value
     });
   }
-  submitMessage() {  
+  submitMessage() {
     this.setState((state) => {
       const currentMessage = state.input;
       return {
@@ -1266,53 +1265,34 @@ class DisplayMessages extends React.Component {
   }
 };
 
-const Provider = ReactRedux.Provider;
-
-class AppWrapper extends React.Component {
-  render(){
-    return (
-        <Provider store={store}>
-          <DisplayMessages />
-        </Provider>
-    )
-  }
-};
-
-
-// Connect Redux to React
-
-const addMessage = (message) => {
-  return {
-    type: 'ADD',
-    message: message
-  }
-};
-
+// React-Redux:
 const mapStateToProps = (state) => {
-  return {
-    messages: state
-  }
+  return { messages: state }
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    submitNewMessage: (message) => {
-      dispatch(addMessage(message));
+    submitNewMessage: (newMessage) => {
+       dispatch(addMessage(newMessage))
     }
   }
 };
 
-class Presentational extends React.Component {
+const Provider = ReactRedux.Provider;
+const connect = ReactRedux.connect;
+
+// Define the Container component here:
+const Container = connect(mapStateToProps, mapDispatchToProps)(Presentational)
+
+class AppWrapper extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
-    return <h3>This is a Presentational Component</h3>
+    return (
+      <Provider store={store}>
+        <Container />
+      </Provider>
+    );
   }
 };
-
-const connect = ReactRedux.connect;
-
-const ConnectedComponent =  connect(mapStateToProps, mapDispatchToProps)(Presentational)
-
-
