@@ -1184,6 +1184,15 @@ const wakeUp = () => {
 const store = Redux.createStore(immutableReducer);
 
 
+
+
+
+// ---------------------------------- React and Redux ----------------------------------
+
+
+
+
+
 // Getting Started with React Redux
 
 class DisplayMessages extends React.Component {
@@ -1222,3 +1231,32 @@ class DisplayMessages extends React.Component {
     );
   }
 };
+
+// Extract State Logic to Redux
+
+const ADD = 'ADD'
+
+const defaultState = []
+
+const messageReducer = (state = defaultState, action) => {
+  switch (action.type){
+    case ADD:
+      let newState = [...state, action.message]
+      return newState
+    default:
+      return state
+  }
+}
+
+const store = Redux.createStore(messageReducer)
+
+const addMessage = (text) => {
+  return {
+    type: ADD,
+    message: text
+  }
+}
+
+//store.dispatch(addMessage('Hello!'));
+//store.dispatch(addMessage('How are you?'));
+//console.log(store.getState());
