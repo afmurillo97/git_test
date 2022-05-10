@@ -1150,3 +1150,35 @@ const removeItem = (index) => {
 }
 
 const store = Redux.createStore(immutableReducer);
+
+
+
+// Copy an Object with Object.assign
+
+const defaultState = {
+  user: 'CamperBot',
+  status: 'offline',
+  friends: '732,982',
+  community: 'freeCodeCamp'
+};
+
+const immutableReducer = (state = defaultState, action) => {
+  console.log(state.status);
+  switch(action.type) {
+    case 'ONLINE':
+      // Don't mutate state here or the tests will fail
+      const newState = Object.assign({}, state, {status: 'online'});
+      console.log(newState);
+      return newState
+    default:
+      return state;
+  }
+};
+
+const wakeUp = () => {
+  return {
+    type: 'ONLINE'
+  }
+};
+
+const store = Redux.createStore(immutableReducer);
