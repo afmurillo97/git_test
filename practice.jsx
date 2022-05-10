@@ -1248,14 +1248,14 @@ const messageReducer = (state = defaultState, action) => {
   }
 }
 
-const store = Redux.createStore(messageReducer)
-
 const addMessage = (text) => {
   return {
     type: ADD,
     message: text
   }
 }
+
+const store = Redux.createStore(messageReducer)
 
 //store.dispatch(addMessage('Hello!'));
 //store.dispatch(addMessage('How are you?'));
