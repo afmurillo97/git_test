@@ -1279,17 +1279,7 @@ class AppWrapper extends React.Component {
 };
 
 
-// Map State to PropsMap State to Props
-
-const state = [];
-
-const mapStateToProps = (state) => {
-  return {
-    messages: state
-  }
-}
-
-// Map Dispatch to Props
+// Connect Redux to React
 
 const addMessage = (message) => {
   return {
@@ -1298,10 +1288,31 @@ const addMessage = (message) => {
   }
 };
 
+const mapStateToProps = (state) => {
+  return {
+    messages: state
+  }
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    submitNewMessage: function(message) {
-      dispatch(addMessage(message))
+    submitNewMessage: (message) => {
+      dispatch(addMessage(message));
     }
   }
-}
+};
+
+class Presentational extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return <h3>This is a Presentational Component</h3>
+  }
+};
+
+const connect = ReactRedux.connect;
+
+const ConnectedComponent =  connect(mapStateToProps, mapDispatchToProps)(Presentational)
+
+
