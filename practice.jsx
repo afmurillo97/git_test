@@ -1193,7 +1193,33 @@ const store = Redux.createStore(immutableReducer);
 
 
 
-// Getting Started with React Redux
+// Redux:
+const ADD = 'ADD';
+
+const addMessage = (message) => {
+  return {
+    type: ADD,
+    message
+  }
+};
+
+const messageReducer = (state = [], action) => {
+  switch (action.type) {
+    case ADD:
+      return [
+        ...state,
+        action.message
+      ];
+    default:
+      return state;
+  }
+};
+
+
+
+const store = Redux.createStore(messageReducer);
+
+// React:
 
 class DisplayMessages extends React.Component {
   constructor(props) {
@@ -1205,58 +1231,49 @@ class DisplayMessages extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.submitMessage = this.submitMessage.bind(this);
   }
-  handleChange(e) {
+  handleChange(event) {
     this.setState({
-      input: e.target.value
-    })
+      input: event.target.value
+    });
   }
-  submitMessage() {
-    this.setState({
-      messages: this.state.messages.concat(this.state.input),
-      input: ''
-    })
+  submitMessage() {  
+    this.setState((state) => {
+      const currentMessage = state.input;
+      return {
+        input: '',
+        messages: state.messages.concat(currentMessage)
+      };
+    });
   }
   render() {
-    const items = this.state.messages.map(item => <li>{item}</li>)
     return (
       <div>
         <h2>Type in a new Message:</h2>
-        {<input 
-          onChange = {this.handleChange}
-          value = {this.state.input}
-         />}
-        {<button onClick = {this.submitMessage}>Submit</button>}
-        {<ul>{items}</ul>}
+        <input
+          value={this.state.input}
+          onChange={this.handleChange}/><br/>
+        <button onClick={this.submitMessage}>Submit</button>
+        <ul>
+          {this.state.messages.map( (message, idx) => {
+              return (
+                 <li key={idx}>{message}</li>
+              )
+            })
+          }
+        </ul>
       </div>
     );
   }
 };
 
-// Extract State Logic to Redux
+const Provider = ReactRedux.Provider;
 
-const ADD = 'ADD'
-
-const defaultState = []
-
-const messageReducer = (state = defaultState, action) => {
-  switch (action.type){
-    case ADD:
-      let newState = [...state, action.message]
-      return newState
-    default:
-      return state
+class AppWrapper extends React.Component {
+  render(){
+    return (
+        <Provider store={store}>
+          <DisplayMessages />
+        </Provider>
+    )
   }
-}
-
-const addMessage = (text) => {
-  return {
-    type: ADD,
-    message: text
-  }
-}
-
-const store = Redux.createStore(messageReducer)
-
-//store.dispatch(addMessage('Hello!'));
-//store.dispatch(addMessage('How are you?'));
-//console.log(store.getState());
+};
